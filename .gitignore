@@ -1,0 +1,7 @@
+/node_modules
+/build
+/dist
+/public/*.js
+/public/*.map
+.env
+*.log

@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"outDir": "../public",
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitAny": true,
+		"sourceMap": true,
+		"baseUrl": "."
+	},
+	"include": ["main.ts", "devElectron.ts"],
+	"exclude": ["node_modules"]
+}
