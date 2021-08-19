@@ -1,8 +1,7 @@
 {
 	"name": "meetscheduler",
 	"description": "Seja lembrado de seus compromissos no Google Meet, com o MeetScheduler.",
-	"version": "1.0.0",
-	"private": true,
+	"version": "1.0.1",
 	"author": "Gepetojj",
 	"homepage": "./",
 	"main": "build/main.js",
@@ -15,7 +14,8 @@
 		"eject": "react-scripts eject",
 		"watch:electron": "tsc --watch --project electron/tsconfig.json",
 		"dev": "concurrently \"yarn watch:electron\" \"yarn start:electron\"",
-		"dist": "yarn build && yarn build:electron && electron-builder build -w"
+		"dist": "yarn build && yarn build:electron && electron-builder build -w",
+		"publish": "electron-builder --publish always"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.12.3",

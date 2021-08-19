@@ -81,6 +81,9 @@ const AppointmentModalInput = MUIStyled(TextField)({
 		borderBottom: `1px solid ${theme.colors.fontDarker}`,
 		filter: "brightness(130%)",
 	},
+	"& .MuiFormLabel-root.Mui-disabled": {
+		color: theme.colors.fontDarker,
+	},
 	"& .MuiFormHelperText-root": {
 		color: theme.colors.fontDarker,
 		marginTop: "0.3rem",
