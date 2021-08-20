@@ -91,6 +91,7 @@ const ScheduleArea = styled.div`
 	width: 100%;
 	max-width: 100%;
 	height: fit-content;
+	min-height: fit-content;
 	margin: 2rem 0;
 	padding-bottom: 1rem;
 	overflow-x: auto;

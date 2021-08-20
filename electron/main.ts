@@ -46,8 +46,11 @@ function createTray() {
 function createWindow() {
 	window = new BrowserWindow({
 		width: 1200,
+		minWidth: 330,
 		height: 800,
+		minHeight: 370,
 		icon: path.resolve(__dirname, ICON_NAME),
+		frame: false,
 		webPreferences: {
 			nodeIntegration: true,
 			enableRemoteModule: true,

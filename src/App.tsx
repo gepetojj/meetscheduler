@@ -5,6 +5,7 @@ import Collapse from "@material-ui/core/Collapse";
 import { MSCProvider } from "./components/MSContext";
 import { Globals } from "./styles/globals";
 import { theme } from "./styles/theme";
+import Header from "./components/Header";
 import Routes from "./routes";
 
 export default function App() {
@@ -17,7 +18,9 @@ export default function App() {
 				TransitionComponent={Collapse}
 			>
 				<MSCProvider>
-					<Routes />
+					<Header>
+						<Routes />
+					</Header>
 				</MSCProvider>
 			</SnackbarProvider>
 		</ThemeProvider>
