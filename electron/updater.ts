@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, app } from "electron";
+import { BrowserWindow, dialog, app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
@@ -24,16 +24,23 @@ export class Updater {
 				})
 				.then((response) => {
 					if (response.response === 1) {
+						ipcMain.emit("update-started");
 						autoUpdater.downloadUpdate();
 					}
 				});
 		});
 
+		autoUpdater.on("download-progress", (info) => {
+			ipcMain.emit("update-progress", info);
+		});
+
 		autoUpdater.on("update-downloaded", () => {
+			ipcMain.emit("update-successful");
 			autoUpdater.quitAndInstall();
 		});
 
 		autoUpdater.on("error", (err) => {
+			ipcMain.emit("update-finished");
 			dialog.showMessageBox(window, {
 				message: err,
 				type: "error",

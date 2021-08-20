@@ -142,7 +142,7 @@ function Dashboard() {
 		refreshSchedule();
 		const dayInterval = setInterval(() => {
 			setDay(getDayOfWeek());
-		}, ONE_SECOND * 5);
+		}, ONE_SECOND * 2);
 		return () => clearInterval(dayInterval);
 		// eslint-disable-next-line
 	}, []);
