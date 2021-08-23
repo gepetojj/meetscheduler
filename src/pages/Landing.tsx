@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 
 import { Storage } from "../helpers/storage";
 import { useMSContext } from "../components/MSContext";
+import Button from "../components/Button";
 
 const electron = window.require("electron");
 
@@ -15,66 +16,35 @@ const Fullpage = styled.div`
 	align-items: center;
 	width: 100%;
 	height: 100%;
+	user-select: none;
 `;
 
 const Slogan = styled.div`
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	width: 100%;
 	height: 100%;
-
-	@media (max-width: 650px) {
-		flex-direction: column;
-	}
 `;
 
-const LeftSide = styled.div`
-	margin-right: 2rem;
-
-	@media (max-width: 650px) {
-		margin: 0 2rem;
-	}
-`;
-
-const RightSide = styled.div`
-	margin-left: 2rem;
-
-	@media (max-width: 650px) {
-		margin: 2rem 0;
-	}
+const TextArea = styled.div`
+	margin: 1.3rem;
 `;
 
 const Title = styled.h1`
+	font-weight: 600;
+	font-size: 2.5rem;
 	text-align: left;
-	color: ${({ theme }) => theme.colors.font};
-	user-select: none;
+	color: ${({ theme }) => theme.colors.font.main};
 `;
 
 const Subtitle = styled.p`
+	font-weight: 400;
+	font-size: 1rem;
 	text-align: left;
-	color: ${({ theme }) => theme.colors.fontDark};
-	user-select: none;
-`;
-
-const CTAButton = styled.button`
-	background-color: ${({ theme }) => theme.colors.primary};
-	color: ${({ theme }) => theme.colors.font};
-	border: none;
-	border-radius: ${({ theme }) => theme.borderRadius};
-	padding: 0.8rem;
-	cursor: pointer;
-	user-select: none;
-	transition: 0.2s;
-
-	&:hover {
-		filter: brightness(115%);
-	}
-
-	&:active {
-		filter: brightness(120%);
-	}
+	color: ${({ theme }) => theme.colors.font.mOne};
+	margin-bottom: 3rem;
 `;
 
 const Copyright = styled.div`
@@ -83,7 +53,7 @@ const Copyright = styled.div`
 
 const CopyrightText = styled.p`
 	text-align: center;
-	color: ${({ theme }) => theme.colors.fontDarker};
+	color: ${({ theme }) => theme.colors.font.main};
 	user-select: none;
 	cursor: pointer;
 `;
@@ -110,17 +80,17 @@ export default function Landing() {
 		<Fullpage>
 			{redirect}
 			<Slogan>
-				<LeftSide>
+				<TextArea>
 					<Title>MeetScheduler</Title>
 					<Subtitle>
 						Seja alertado quando seus compromissos iniciarem.
 					</Subtitle>
-				</LeftSide>
-				<RightSide>
+				</TextArea>
+				<TextArea>
 					<Link to="/dashboard">
-						<CTAButton>Comece agora</CTAButton>
+						<Button type="primary" text="Comece agora" />
 					</Link>
-				</RightSide>
+				</TextArea>
 			</Slogan>
 			<Copyright>
 				<CopyrightText

@@ -6,18 +6,19 @@ import styled from "styled-components";
 import uniqid from "uniqid";
 import Modal from "reactjs-popup";
 import {
-	TextField,
 	InputLabel,
 	MenuItem,
 	FormControl,
 	Select,
-	Input,
+	Input as MUIInput,
 } from "@material-ui/core";
 
 import { useMSContext } from "./MSContext";
 import { Appointment, Day } from "../entities";
 import { Storage } from "../helpers";
 import { theme } from "../styles/theme";
+import Input from "./Input";
+import Button from "./Button";
 
 const AddAppointmentModalArea = styled(Modal)`
 	&-overlay {
@@ -25,7 +26,7 @@ const AddAppointmentModalArea = styled(Modal)`
 	}
 
 	&-content {
-		background-color: ${({ theme }) => theme.colors.background};
+		background-color: ${({ theme }) => theme.colors.secondary.main};
 		width: 30rem;
 		height: fit-content;
 		padding: 1rem;
@@ -51,7 +52,7 @@ const AddAppointmentModalHeader = styled.div`
 const AddAppointmentModalTitle = styled.h1`
 	font-size: 1.5rem;
 	text-align: center;
-	color: ${({ theme }) => theme.colors.font};
+	color: ${({ theme }) => theme.colors.font.main};
 	user-select: none;
 `;
 
@@ -62,133 +63,34 @@ const AddAppointmentModalForm = styled.form`
 	overflow-y: auto;
 `;
 
-const AddAppointmentModalInput = MUIStyled(TextField)({
-	margin: "1rem 0",
-	"& label": {
-		fontFamily: "'Poppins', sans-serif",
-		color: theme.colors.font,
-		paddingLeft: "0.3rem",
-		userSelect: "none",
-	},
-	"& input": {
-		fontFamily: "'Poppins', sans-serif",
-		color: theme.colors.fontDark,
-	},
-	"& .MuiInputLabel-root": {
-		"&.Mui-focused": {
-			color: theme.colors.fontDark,
-		},
-	},
-	"& .MuiInput-root:before": {
-		borderBottom: `1px solid ${theme.colors.fontDark}`,
-	},
-	"& .MuiInput-root:after": {
-		borderBottom: `1px solid ${theme.colors.fontDarker}`,
-	},
-	"& .MuiInput-root:hover:not(.Mui-disabled):before": {
-		borderBottom: `1px solid ${theme.colors.fontDarker}`,
-		filter: "brightness(130%)",
-	},
-	"& .MuiFormHelperText-root": {
-		color: theme.colors.fontDarker,
-		marginTop: "0.3rem",
-	},
-});
-
 const AddAppointmentModalFormControl = MUIStyled(FormControl)({
-	margin: "1rem 0",
+	margin: "0.5rem 0 2rem 0",
 	"& label": {
 		fontFamily: "'Poppins', sans-serif",
-		color: theme.colors.font,
+		color: theme.colors.font.main,
 		paddingLeft: "0.3rem",
 		userSelect: "none",
 	},
 	"& svg": {
-		color: theme.colors.fontDarker,
+		color: theme.colors.font.mTwo,
 	},
 	"& .MuiInputBase-input": {
-		color: theme.colors.fontDark,
+		color: theme.colors.font.mOne,
 	},
 	"& .MuiFormLabel-root.Mui-focused": {
-		color: theme.colors.font,
+		color: theme.colors.font.main,
 	},
 	"& .MuiInput-root:before": {
-		borderBottom: `1px solid ${theme.colors.fontDark}`,
+		borderBottom: `1px solid ${theme.colors.font.mOne}`,
 	},
 	"& .MuiInput-root:after": {
-		borderBottom: `1px solid ${theme.colors.fontDarker}`,
+		borderBottom: `1px solid ${theme.colors.font.mTwo}`,
 	},
 	"& .MuiInput-root:hover:not(.Mui-disabled):before": {
-		borderBottom: `1px solid ${theme.colors.fontDark}`,
+		borderBottom: `1px solid ${theme.colors.font.mTwo}`,
 		filter: "brightness(130%)",
 	},
 });
-
-const AddButton = styled.button`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 10rem;
-	background-color: ${({ theme }) => theme.colors.primary};
-	color: ${({ theme }) => theme.colors.font};
-	border: none;
-	border-radius: ${({ theme }) => theme.borderRadius};
-	padding: 0.8rem;
-	margin-top: 2rem;
-	cursor: pointer;
-	user-select: none;
-	transition: 0.2s;
-
-	&:hover {
-		filter: brightness(115%);
-	}
-
-	&:active {
-		filter: brightness(120%);
-	}
-`;
-
-const ButtonIcon = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-right: 0.5rem;
-`;
-
-const ButtonText = styled.p`
-	display: flex;
-	text-align: center;
-	justify-content: center;
-	align-items: center;
-	color: ${({ theme }) => theme.colors.fontDark};
-	user-select: none;
-`;
-
-const ConfirmButton = styled.button`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	background-color: ${({ theme }) => theme.colors.primary};
-	color: ${({ theme }) => theme.colors.font};
-	border: none;
-	border-radius: ${({ theme }) => theme.borderRadius};
-	padding: 0.8rem;
-	margin-top: 2rem;
-	cursor: pointer;
-	user-select: none;
-	transition: 0.2s;
-
-	&:hover {
-		filter: brightness(115%);
-	}
-
-	&:active {
-		filter: brightness(120%);
-	}
-`;
 
 export default function AddAppointmentModal() {
 	const [days] = useState([
@@ -205,7 +107,7 @@ export default function AddAppointmentModal() {
 	const { enqueueSnackbar } = useSnackbar();
 	const { schedule } = useMSContext();
 
-	const handleAppointmentCreation = async (
+	const handleAppointmentCreation = (
 		name: string,
 		link: string,
 		time: string,
@@ -245,12 +147,13 @@ export default function AddAppointmentModal() {
 	return (
 		<AddAppointmentModalArea
 			trigger={
-				<AddButton>
-					<ButtonIcon>
-						<RiAddFill size={21} />
-					</ButtonIcon>
-					<ButtonText>Adicionar</ButtonText>
-				</AddButton>
+				<Button
+					type="primary"
+					text="Adicionar"
+					icon={
+						<RiAddFill color={theme.colors.font.mOne} size={30} />
+					}
+				/>
 			}
 			modal
 			nested
@@ -261,8 +164,8 @@ export default function AddAppointmentModal() {
 				<>
 					<AddAppointmentModalHeader>
 						<RiCloseFill
-							color={theme.colors.fontDark}
-							size={24}
+							color={theme.colors.font.mOne}
+							size={30}
 							onClick={() => {
 								close();
 							}}
@@ -288,18 +191,18 @@ export default function AddAppointmentModal() {
 								);
 							}}
 						>
-							<AddAppointmentModalInput
+							<Input
 								fullWidth
 								label="Nome da atividade"
 								variant="standard"
 							/>
-							<AddAppointmentModalInput
+							<Input
 								fullWidth
 								label="Link da atividade"
 								variant="standard"
 								type="url"
 							/>
-							<AddAppointmentModalInput
+							<Input
 								fullWidth
 								label="Início da atividade"
 								variant="standard"
@@ -319,7 +222,7 @@ export default function AddAppointmentModal() {
 									onChange={(day) => {
 										setSelectedDay(day.target.value);
 									}}
-									input={<Input />}
+									input={<MUIInput />}
 								>
 									{days.map((day) => (
 										<MenuItem
@@ -331,12 +234,17 @@ export default function AddAppointmentModal() {
 									))}
 								</Select>
 							</AddAppointmentModalFormControl>
-							<ConfirmButton type="submit">
-								<ButtonIcon>
-									<RiAddFill size={21} />
-								</ButtonIcon>
-								<ButtonText>Adicionar</ButtonText>
-							</ConfirmButton>
+							<Button
+								fullWidth
+								type="primary"
+								text="Adicionar"
+								icon={
+									<RiAddFill
+										size={30}
+										color={theme.colors.font.main}
+									/>
+								}
+							/>
 						</AddAppointmentModalForm>
 					</div>
 				</>

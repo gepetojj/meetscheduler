@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { withSnackbar, useSnackbar } from "notistack";
-import { RiRefreshLine } from "react-icons/ri";
+import { MoreVert, Refresh } from "@material-ui/icons";
 import styled from "styled-components";
 import dayjs from "dayjs";
 
@@ -8,8 +8,10 @@ import { Day } from "../entities";
 import { getDayOfWeek, getMinute, getHour, Storage } from "../helpers";
 import { useMSContext } from "../components/MSContext";
 import AddAppointmentModal from "../components/AddAppointment";
-import Appointment from "../components/Appointment";
+import Appointment from "../components/AppointmentModal";
 import NoAppointment from "../components/NoAppointment";
+import Button from "../components/Button";
+import { theme } from "../styles/theme";
 
 const ONE_SECOND = 1000;
 const electron = window.require("electron");
@@ -26,61 +28,35 @@ const Fullpage = styled.div`
 const PageTitle = styled.h1`
 	font-size: 2.5rem;
 	text-align: left;
-	color: ${({ theme }) => theme.colors.font};
+	color: ${({ theme }) => theme.colors.font.main};
 	user-select: none;
 `;
 
 const PageSubTitle = styled.p`
+	width: 60%;
 	text-align: left;
-	color: ${({ theme }) => theme.colors.fontDark};
+	color: ${({ theme }) => theme.colors.font.mOne};
 	user-select: none;
+
+	@media (max-width: 843px) {
+		width: 80%;
+	}
+	@media (max-width: 650px) {
+		width: 90%;
+	}
+	@media (max-width: 450px) {
+		width: 100%;
+	}
 `;
 
 const Buttons = styled.div`
 	display: flex;
 	flex-direction: row;
-`;
+	margin-top: 1.5rem;
 
-const RefreshButton = styled.button`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 10rem;
-	background-color: ${({ theme }) => theme.colors.background};
-	color: ${({ theme }) => theme.colors.font};
-	border: 1px solid ${({ theme }) => theme.colors.font + "10"};
-	border-radius: ${({ theme }) => theme.borderRadius};
-	padding: 0.8rem;
-	margin-top: 2rem;
-	margin-left: 1.5rem;
-	cursor: pointer;
-	user-select: none;
-	transition: 0.2s;
-
-	&:hover {
-		filter: brightness(150%);
+	& button {
+		margin-right: 1.4rem;
 	}
-
-	&:active {
-		filter: brightness(160%);
-	}
-`;
-
-const ButtonIcon = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-right: 0.5rem;
-`;
-
-const ButtonText = styled.p`
-	display: flex;
-	text-align: center;
-	justify-content: center;
-	align-items: center;
-	color: ${({ theme }) => theme.colors.fontDark};
-	user-select: none;
 `;
 
 const ScheduleArea = styled.div`
@@ -101,11 +77,11 @@ const ScheduleArea = styled.div`
 		height: 8px;
 	}
 	&::-webkit-scrollbar-track {
-		background-color: ${({ theme }) => theme.colors.backgroundLight};
+		background-color: ${({ theme }) => theme.colors.secondary.mOne};
 		border-radius: 10px;
 	}
 	&::-webkit-scrollbar-thumb {
-		background-color: ${({ theme }) => theme.colors.backgroundLighter};
+		background-color: ${({ theme }) => theme.colors.secondary.pTwo};
 		border-radius: 10px;
 	}
 `;
@@ -121,10 +97,25 @@ const DayArea = styled.div`
 const DayName = styled.h2<{ marked: boolean }>`
 	font-size: 1.7rem;
 	text-align: center;
-	color: ${({ theme }) => theme.colors.font};
+	color: ${({ theme }) => theme.colors.font.main};
 	user-select: none;
 	margin-bottom: 1rem;
 	text-decoration: ${(props) => (props.marked ? "underline" : "none")};
+`;
+
+const Options = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	background-color: ${({ theme }) => theme.colors.secondary.main};
+	border-radius: ${({ theme }) => theme.borderRadius};
+	transition: 0.2s;
+	cursor: pointer;
+
+	&:hover {
+		filter: brightness(115%);
+	}
 `;
 
 function Dashboard() {
@@ -139,10 +130,15 @@ function Dashboard() {
 	};
 
 	useEffect(() => {
+		let cooldown = ONE_SECOND;
 		refreshSchedule();
 		const dayInterval = setInterval(() => {
+			if (day === getDayOfWeek()) {
+				cooldown < 10 && cooldown++;
+			}
 			setDay(getDayOfWeek());
-		}, ONE_SECOND * 2);
+			refreshSchedule();
+		}, ONE_SECOND * cooldown);
 		return () => clearInterval(dayInterval);
 		// eslint-disable-next-line
 	}, []);
@@ -187,7 +183,14 @@ function Dashboard() {
 
 	const RefreshAppointments = () => {
 		return (
-			<RefreshButton
+			<Button
+				type="secondary"
+				text="Recarregar"
+				icon={
+					<Refresh
+						style={{ color: theme.colors.font.main, fontSize: 30 }}
+					/>
+				}
 				onClick={() => {
 					setAppointmentCache([]);
 					refreshSchedule();
@@ -195,12 +198,17 @@ function Dashboard() {
 						variant: "success",
 					});
 				}}
-			>
-				<ButtonIcon>
-					<RiRefreshLine size={21} />
-				</ButtonIcon>
-				<ButtonText>Recarregar</ButtonText>
-			</RefreshButton>
+			/>
+		);
+	};
+
+	const MoreOptions = () => {
+		return (
+			<Options>
+				<MoreVert
+					style={{ color: theme.colors.font.main, fontSize: 30 }}
+				/>
+			</Options>
 		);
 	};
 
@@ -208,12 +216,13 @@ function Dashboard() {
 		<Fullpage>
 			<PageTitle>Dashboard</PageTitle>
 			<PageSubTitle>
-				Aqui estarão seus compromissos agendados. Você pode alterar
-				quantos deles tem em um dia, e seus horários.
+				Aqui estão seus compromissos agendados. Você pode adicionar eles
+				em cada dia, seus horários e mais.
 			</PageSubTitle>
 			<Buttons>
 				<AddAppointmentModal />
 				<RefreshAppointments />
+				<MoreOptions />
 			</Buttons>
 			<ScheduleArea>
 				<DayArea>
@@ -223,8 +232,8 @@ function Dashboard() {
 					) : (
 						schedule.monday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -237,8 +246,8 @@ function Dashboard() {
 					) : (
 						schedule.tuesday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -251,8 +260,8 @@ function Dashboard() {
 					) : (
 						schedule.wednesday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -265,8 +274,8 @@ function Dashboard() {
 					) : (
 						schedule.thursday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -279,8 +288,8 @@ function Dashboard() {
 					) : (
 						schedule.friday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -293,8 +302,8 @@ function Dashboard() {
 					) : (
 						schedule.saturday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))
@@ -307,8 +316,8 @@ function Dashboard() {
 					) : (
 						schedule.sunday.map((appointment) => (
 							<Appointment
-								appointment={appointment}
 								key={appointment.id}
+								appointment={appointment}
 								deleteAppointment={deleteAppointment}
 							/>
 						))

@@ -14,7 +14,7 @@ Baixe a versão mais recente, clicando [aqui](https://github.com/gepetojj/meetsc
 
 ## Tecnologias  
 
-Todas as tecnologias e libs estão listadas no [package.json](https://github.com/gepetojj/meetscheduler/blob/master/package.json)  
+Todas as tecnologias e libs estão listadas no [package.json](https://github.com/gepetojj/meetscheduler/blob/master/package.json).  
 
 ### Electron  
 
@@ -33,7 +33,7 @@ Framework para interfaces.
 
 ## Design
 
-O design do projeto é totalmente responsivo.  
+O projeto de design foi feito no [Figma](https://www.figma.com/file/qM0LLHndNKCirTJAr7EpdO/MeetScheduler?node-id=4%3A114).  
 
 ### Página inicial
 

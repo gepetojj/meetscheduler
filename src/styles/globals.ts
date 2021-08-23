@@ -10,24 +10,25 @@ const Globals = createGlobalStyle`
 		margin: 0;
 		font-family: 'Poppins', sans-serif;
 		text-rendering: optimizeLegibility;
-		background-color: ${({ theme }) => theme.colors.background};
+		background-color: ${({ theme }) => theme.colors.secondary.main};
 
 		&::-webkit-scrollbar {
 			width: 7px;
 			height: 8px;
 		}
 		&::-webkit-scrollbar-track {
-			background-color: ${({ theme }) => theme.colors.backgroundLight};
+			background-color: ${({ theme }) => theme.colors.secondary.mOne};
 			border-radius: 10px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background-color: ${({ theme }) => theme.colors.backgroundLighter};
+			background-color: ${({ theme }) => theme.colors.secondary.pTwo};
 			border-radius: 10px;
 		}
 	}
 	h1, h2, h3, h4, h5, h6, p, a, span { margin: 0; }
 	button { font-family: 'Poppins', sans-serif }
-    button:focus-visible { outline: #33203d solid 3px; }
+    button:focus-visible { outline: ${({ theme }) =>
+		theme.colors.secondary.mOne} solid 3px; }
 `;
 
 export { Globals };
