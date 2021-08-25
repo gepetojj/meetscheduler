@@ -1,10 +1,9 @@
-import { RiCloseLine } from "react-icons/ri";
-import { FiMinus } from "react-icons/fi";
+import { Remove, Close } from "@material-ui/icons";
 import styled from "styled-components";
 
 import { theme } from "../styles/theme";
 
-const electron = window.require("electron");
+const ipcRenderer = window.require("electron").ipcRenderer;
 
 const HeaderArea = styled.header`
 	display: flex;
@@ -72,18 +71,28 @@ export default function Header({ children }) {
 				<HeaderRightSide>
 					<HeaderOption
 						onClick={() => {
-							electron.remote.getCurrentWindow().minimize();
+							ipcRenderer.send("minimize-program");
 						}}
 					>
-						<FiMinus color={theme.colors.font.main} size={24} />
+						<Remove
+							style={{
+								fontSize: 24,
+								color: theme.colors.font.main,
+							}}
+						/>
 					</HeaderOption>
 					<HeaderOption
 						isCloseOption
 						onClick={() => {
-							electron.remote.getCurrentWindow().close();
+							ipcRenderer.send("close-program");
 						}}
 					>
-						<RiCloseLine color={theme.colors.font.main} size={24} />
+						<Close
+							style={{
+								fontSize: 24,
+								color: theme.colors.font.main,
+							}}
+						/>
 					</HeaderOption>
 				</HeaderRightSide>
 			</HeaderArea>

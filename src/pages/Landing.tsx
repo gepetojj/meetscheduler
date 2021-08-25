@@ -72,9 +72,7 @@ export default function Landing() {
 		} else {
 			setRedirect(<Redirect to={"dashboard"} />);
 		}
-
-		// eslint-disable-next-line
-	}, []);
+	}, [settings, storage]);
 
 	return (
 		<Fullpage>

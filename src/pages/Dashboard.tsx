@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { withSnackbar, useSnackbar } from "notistack";
 import { MoreVert, Refresh } from "@material-ui/icons";
 import styled from "styled-components";
@@ -80,18 +80,20 @@ function Dashboard() {
 	const { enqueueSnackbar } = useSnackbar();
 	const { schedule } = useMSContext();
 
-	const refreshSchedule = () => {
+	const refreshSchedule = useCallback(() => {
 		schedule.update(storage.refresh());
-	};
+	}, [schedule, storage]);
 
 	useEffect(() => {
 		const dayInterval = setInterval(() => {
-			setDay(getDayOfWeek());
-			refreshSchedule();
+			const newDay = getDayOfWeek();
+			if (day !== newDay) {
+				setDay(newDay);
+				refreshSchedule();
+			}
 		}, ONE_SECOND);
 		return () => clearInterval(dayInterval);
-		// eslint-disable-next-line
-	}, []);
+	}, [day, refreshSchedule]);
 
 	useEffect(() => {
 		const checkInterval = setInterval(() => {
@@ -119,8 +121,7 @@ function Dashboard() {
 			}
 		}, ONE_SECOND);
 		return () => clearInterval(checkInterval);
-		// eslint-disable-next-line
-	}, [schedule]);
+	}, [schedule, day, enqueueSnackbar, appointmentCache]);
 
 	const deleteAppointment = (day: Day, id: string) => {
 		const newAppointments = schedule[day].filter((appointment) => {

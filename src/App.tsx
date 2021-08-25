@@ -26,7 +26,6 @@ export default function App() {
 		electron.ipcRenderer.on("update-finished", () => {
 			setIsUpdating(false);
 		});
-		// eslint-disable-next-line
 	}, []);
 
 	return (

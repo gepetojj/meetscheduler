@@ -10,7 +10,7 @@ Porém, o MeetScheduler só funciona com atividades rotineiras que acontecem tod
 
 ## Download
 
-Baixe a versão mais recente, clicando [aqui](https://github.com/gepetojj/meetscheduler/releases).  
+Baixe a versão mais recente, clicando [aqui](https://github.com/gepetojj/meetscheduler/releases/latest).  
 
 ## Tecnologias  
 

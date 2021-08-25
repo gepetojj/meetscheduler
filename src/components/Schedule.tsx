@@ -1,7 +1,16 @@
+import {
+	DragDropContext,
+	Droppable,
+	Draggable,
+	DropResult,
+	DroppableProvided,
+	DraggableProvided,
+} from "react-beautiful-dnd";
 import styled from "styled-components";
 
-import { Day } from "../entities";
+import { Day, Schedule as ESchedule } from "../entities";
 import { useMSContext } from "./MSContext";
+import { Storage } from "../helpers/storage";
 import Appointment from "./EditAppointment";
 import NoAppointment from "./NoAppointment";
 
@@ -57,6 +66,76 @@ const DayName = styled.h2<{ marked: boolean }>`
 export default function Schedule({ day, deleteAppointment }: ISchedule) {
 	const { schedule, settings } = useMSContext();
 
+	const reorder = (day: Day, startIndex: number, endIndex: number) => {
+		let newSchedule: ESchedule = { ...schedule };
+		const [removed] = newSchedule[day].splice(startIndex, 1);
+		newSchedule[day].splice(endIndex, 0, removed);
+		return newSchedule;
+	};
+
+	const onDragEnd = (result: DropResult) => {
+		if (!result.destination) {
+			return;
+		}
+
+		const newSchedule = reorder(
+			result.destination.droppableId as Day,
+			result.source.index,
+			result.destination.index
+		);
+		new Storage("schedule").write(newSchedule);
+		schedule.update(newSchedule);
+	};
+
+	const AppointmentDnD = ({ targetDay }: { targetDay: Day }) => {
+		return (
+			<DragDropContext onDragEnd={onDragEnd}>
+				<Droppable droppableId={targetDay}>
+					{(provided: DroppableProvided) => (
+						<>
+							<div
+								ref={provided.innerRef}
+								{...provided.droppableProps}
+							>
+								{schedule[targetDay].map(
+									(appointment, index) => (
+										<Draggable
+											key={appointment.id}
+											draggableId={appointment.id}
+											index={index}
+										>
+											{(
+												providedDraggable: DraggableProvided
+											) => (
+												<div
+													ref={
+														providedDraggable.innerRef
+													}
+													{...providedDraggable.draggableProps}
+													{...providedDraggable.dragHandleProps}
+												>
+													<Appointment
+														appointment={
+															appointment
+														}
+														deleteAppointment={
+															deleteAppointment
+														}
+													/>
+												</div>
+											)}
+										</Draggable>
+									)
+								)}
+							</div>
+							{provided.placeholder}
+						</>
+					)}
+				</Droppable>
+			</DragDropContext>
+		);
+	};
+
 	return (
 		<ScheduleArea>
 			{!settings.useMondayAsFirstDay && (
@@ -65,13 +144,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 					{!schedule.sunday.length ? (
 						<NoAppointment />
 					) : (
-						schedule.sunday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
+						<AppointmentDnD targetDay={"sunday"} />
 					)}
 				</DayArea>
 			)}
@@ -80,13 +153,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.monday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.monday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"monday"} />
 				)}
 			</DayArea>
 			<DayArea>
@@ -94,13 +161,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.tuesday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.tuesday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"tuesday"} />
 				)}
 			</DayArea>
 			<DayArea>
@@ -108,13 +169,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.wednesday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.wednesday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"wednesday"} />
 				)}
 			</DayArea>
 			<DayArea>
@@ -122,13 +177,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.thursday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.thursday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"thursday"} />
 				)}
 			</DayArea>
 			<DayArea>
@@ -136,13 +185,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.friday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.friday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"friday"} />
 				)}
 			</DayArea>
 			<DayArea>
@@ -150,13 +193,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 				{!schedule.saturday.length ? (
 					<NoAppointment />
 				) : (
-					schedule.saturday.map((appointment) => (
-						<Appointment
-							key={appointment.id}
-							appointment={appointment}
-							deleteAppointment={deleteAppointment}
-						/>
-					))
+					<AppointmentDnD targetDay={"saturday"} />
 				)}
 			</DayArea>
 			{settings.useMondayAsFirstDay && (
@@ -165,13 +202,7 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 					{!schedule.sunday.length ? (
 						<NoAppointment />
 					) : (
-						schedule.sunday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
+						<AppointmentDnD targetDay={"sunday"} />
 					)}
 				</DayArea>
 			)}

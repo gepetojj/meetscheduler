@@ -96,6 +96,15 @@ function createWindow() {
 			tray.destroy();
 		}
 	});
+
+	window.webContents.on("ipc-message", (_, channel) => {
+		if (channel === "minimize-program" && window) {
+			window.minimize();
+		}
+		if (channel === "close-program" && window) {
+			window.close();
+		}
+	});
 }
 
 app.on("ready", () => {
