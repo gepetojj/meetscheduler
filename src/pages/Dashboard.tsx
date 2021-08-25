@@ -5,13 +5,12 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 
 import { Day } from "../entities";
-import { getDayOfWeek, getMinute, getHour, Storage } from "../helpers";
-import { useMSContext } from "../components/MSContext";
-import AddAppointmentModal from "../components/AddAppointment";
-import Appointment from "../components/AppointmentModal";
-import NoAppointment from "../components/NoAppointment";
-import Button from "../components/Button";
 import { theme } from "../styles/theme";
+import { useMSContext } from "../components/MSContext";
+import { getDayOfWeek, getMinute, getHour, Storage } from "../helpers";
+import Button from "../components/Button";
+import Schedule from "../components/Schedule";
+import AddAppointmentModal from "../components/AddAppointment";
 
 const ONE_SECOND = 1000;
 const electron = window.require("electron");
@@ -59,50 +58,6 @@ const Buttons = styled.div`
 	}
 `;
 
-const ScheduleArea = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: flex-start;
-	width: 100%;
-	max-width: 100%;
-	height: fit-content;
-	min-height: fit-content;
-	margin: 2rem 0;
-	padding-bottom: 1rem;
-	overflow-x: auto;
-
-	&::-webkit-scrollbar {
-		width: 7px;
-		height: 8px;
-	}
-	&::-webkit-scrollbar-track {
-		background-color: ${({ theme }) => theme.colors.secondary.mOne};
-		border-radius: 10px;
-	}
-	&::-webkit-scrollbar-thumb {
-		background-color: ${({ theme }) => theme.colors.secondary.pTwo};
-		border-radius: 10px;
-	}
-`;
-
-const DayArea = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	padding: 0 1rem;
-`;
-
-const DayName = styled.h2<{ marked: boolean }>`
-	font-size: 1.7rem;
-	text-align: center;
-	color: ${({ theme }) => theme.colors.font.main};
-	user-select: none;
-	margin-bottom: 1rem;
-	text-decoration: ${(props) => (props.marked ? "underline" : "none")};
-`;
-
 const Options = styled.div`
 	display: flex;
 	flex-direction: row;
@@ -130,15 +85,10 @@ function Dashboard() {
 	};
 
 	useEffect(() => {
-		let cooldown = ONE_SECOND;
-		refreshSchedule();
 		const dayInterval = setInterval(() => {
-			if (day === getDayOfWeek()) {
-				cooldown < 10 && cooldown++;
-			}
 			setDay(getDayOfWeek());
 			refreshSchedule();
-		}, ONE_SECOND * cooldown);
+		}, ONE_SECOND);
 		return () => clearInterval(dayInterval);
 		// eslint-disable-next-line
 	}, []);
@@ -172,9 +122,9 @@ function Dashboard() {
 		// eslint-disable-next-line
 	}, [schedule]);
 
-	const deleteAppointment = async (day: Day, appointmentId: string) => {
+	const deleteAppointment = (day: Day, id: string) => {
 		const newAppointments = schedule[day].filter((appointment) => {
-			return appointment.id !== appointmentId;
+			return appointment.id !== id;
 		});
 		const newSchedule = { ...schedule, [day]: newAppointments };
 		storage.write(newSchedule);
@@ -224,106 +174,7 @@ function Dashboard() {
 				<RefreshAppointments />
 				<MoreOptions />
 			</Buttons>
-			<ScheduleArea>
-				<DayArea>
-					<DayName marked={day === "monday"}>Segunda</DayName>
-					{!schedule.monday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.monday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "tuesday"}>Terça</DayName>
-					{!schedule.tuesday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.tuesday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "wednesday"}>Quarta</DayName>
-					{!schedule.wednesday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.wednesday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "thursday"}>Quinta</DayName>
-					{!schedule.thursday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.thursday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "friday"}>Sexta</DayName>
-					{!schedule.friday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.friday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "saturday"}>Sábado</DayName>
-					{!schedule.saturday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.saturday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-				<DayArea>
-					<DayName marked={day === "sunday"}>Domingo</DayName>
-					{!schedule.sunday.length ? (
-						<NoAppointment />
-					) : (
-						schedule.sunday.map((appointment) => (
-							<Appointment
-								key={appointment.id}
-								appointment={appointment}
-								deleteAppointment={deleteAppointment}
-							/>
-						))
-					)}
-				</DayArea>
-			</ScheduleArea>
+			<Schedule day={day} deleteAppointment={deleteAppointment} />
 		</Fullpage>
 	);
 }

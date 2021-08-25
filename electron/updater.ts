@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, app, ipcMain } from "electron";
+import { BrowserWindow, dialog, app } from "electron";
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
@@ -19,28 +19,28 @@ export class Updater {
 				.showMessageBox(window, {
 					message: `Uma atualização para o ${app.getName()} está disponível.`,
 					type: "info",
-					buttons: ["Ignorar", "Atualizar"],
+					buttons: ["Atualizar", "Ignorar"],
 					title: "Atualização disponível!",
 				})
 				.then((response) => {
-					if (response.response === 1) {
-						ipcMain.emit("update-started");
+					if (response.response === 0) {
+						window.webContents.emit("update-started");
 						autoUpdater.downloadUpdate();
 					}
 				});
 		});
 
 		autoUpdater.on("download-progress", (info) => {
-			ipcMain.emit("update-progress", info);
+			window.webContents.emit("update-progress", info);
 		});
 
 		autoUpdater.on("update-downloaded", () => {
-			ipcMain.emit("update-successful");
+			window.webContents.emit("update-finished");
 			autoUpdater.quitAndInstall();
 		});
 
 		autoUpdater.on("error", (err) => {
-			ipcMain.emit("update-finished");
+			window.webContents.emit("update-finished");
 			dialog.showMessageBox(window, {
 				message: err,
 				type: "error",

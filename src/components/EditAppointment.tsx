@@ -54,7 +54,7 @@ const AppointmentModalForm = styled.form`
 	margin: 0.7rem 0.5rem;
 `;
 
-export default function AppointmentModal({
+export default function EditAppointment({
 	appointment,
 	deleteAppointment,
 }: {

@@ -5,10 +5,11 @@ export interface MSCSchedule extends Schedule {
 	update(data: Schedule): void;
 }
 
-export type Setting = "firstTimeAccess";
+export type Setting = "firstTimeAccess" | "useMondayAsFirstDay";
 
 export interface Settings {
 	firstTimeAccess: boolean;
+	useMondayAsFirstDay: boolean;
 }
 
 export interface MSCSettings extends Settings {
@@ -23,6 +24,7 @@ export interface IMSContext {
 const MSContext = createContext<IMSContext>({
 	settings: {
 		firstTimeAccess: true,
+		useMondayAsFirstDay: true,
 		update: (key, value) => {},
 	},
 	schedule: {
@@ -40,6 +42,7 @@ const MSContext = createContext<IMSContext>({
 const MSCProvider = ({ children }) => {
 	const [settings, setSettings] = useState<Settings>({
 		firstTimeAccess: true,
+		useMondayAsFirstDay: true,
 	});
 	const [schedule, setSchedule] = useState<Schedule>({
 		monday: [],
