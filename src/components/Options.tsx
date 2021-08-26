@@ -122,15 +122,22 @@ const Setting = styled.div`
 const StyledSwitch = MUIStyled(Switch)({
 	"& .MuiSwitch-switchBase": {
 		color: theme.colors.secondary.mTwo,
+		transition: "0.2s",
 	},
 	"& .MuiSwitch-track": {
 		backgroundColor: theme.colors.secondary.mTwo,
+	},
+	"& .MuiIconButton-root:hover": {
+		backgroundColor: theme.colors.secondary.mTwo + "25",
 	},
 	"& .MuiSwitch-colorSecondary.Mui-checked": {
 		color: theme.colors.primary.main,
 	},
 	"& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track": {
 		backgroundColor: theme.colors.secondary.mTwo,
+	},
+	"& .MuiSwitch-colorSecondary.Mui-checked:hover": {
+		backgroundColor: theme.colors.primary.main + "25",
 	},
 });
 
@@ -223,7 +230,7 @@ export default function Options() {
 							</Setting>
 							<StyledDivider />
 							<Setting>
-								<p>Sufixo automático para links.</p>
+								<p>Sufixo automático nos links.</p>
 								<Input
 									label="Sufixo"
 									variant="standard"
@@ -242,6 +249,7 @@ export default function Options() {
 				)}
 			</SettingsModal>
 			<OptionsButton
+				aria-label="Abre as opções"
 				aria-controls="menu"
 				aria-haspopup="true"
 				onClick={enableMenu}

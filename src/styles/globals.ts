@@ -27,8 +27,12 @@ const Globals = createGlobalStyle`
 	}
 	h1, h2, h3, h4, h5, h6, p, a, span { margin: 0; }
 	button { font-family: 'Poppins', sans-serif }
-    button:focus-visible { outline: ${({ theme }) =>
+    button:focus-visible, div:focus-visible { outline: ${({ theme }) =>
 		theme.colors.secondary.mOne} solid 3px; }
+	.MuiPaper-root {
+		background-color: ${({ theme }) => theme.colors.secondary.mOne} !important;
+		color: ${({ theme }) => theme.colors.font.mTwo} !important;
+	}
 `;
 
 export { Globals };

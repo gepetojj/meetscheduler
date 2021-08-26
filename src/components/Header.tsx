@@ -70,6 +70,7 @@ export default function Header({ children }) {
 				</HeaderLeftSide>
 				<HeaderRightSide>
 					<HeaderOption
+						aria-label="Minimiza o programa"
 						onClick={() => {
 							ipcRenderer.send("minimize-program");
 						}}
@@ -82,6 +83,7 @@ export default function Header({ children }) {
 						/>
 					</HeaderOption>
 					<HeaderOption
+						aria-label="Fecha o programa"
 						isCloseOption
 						onClick={() => {
 							ipcRenderer.send("close-program");

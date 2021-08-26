@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { RiGhostLine } from "react-icons/ri";
 import styled from "styled-components";
 
@@ -24,7 +25,7 @@ const AppointmentLabel = styled.span`
 	user-select: none;
 `;
 
-export default function NoAppointment() {
+function NoAppointment() {
 	return (
 		<AppointmentArea>
 			<RiGhostLine color={theme.colors.font.mOne} size={40} />
@@ -32,3 +33,5 @@ export default function NoAppointment() {
 		</AppointmentArea>
 	);
 }
+
+export default memo(NoAppointment);

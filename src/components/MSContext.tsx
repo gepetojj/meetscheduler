@@ -11,6 +11,13 @@ export type Setting =
 	| "autoOpenAppointments"
 	| "linkSuffix";
 
+export const SETTINGS: Setting[] = [
+	"firstTimeAccess",
+	"useMondayAsFirstDay",
+	"autoOpenAppointments",
+	"linkSuffix",
+];
+
 export interface Settings {
 	firstTimeAccess: boolean;
 	useMondayAsFirstDay: boolean;

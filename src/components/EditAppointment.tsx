@@ -75,7 +75,7 @@ export default function EditAppointment({
 	const [aLink, setALink] = useState("");
 	const [aTime, setATime] = useState("");
 	const { enqueueSnackbar } = useSnackbar();
-	const { schedule } = useMSContext();
+	const { schedule, settings } = useMSContext();
 
 	useEffect(() => {
 		setAName(appointment.name);
@@ -195,7 +195,11 @@ export default function EditAppointment({
 							/>
 							<Input
 								fullWidth
-								label="Link da atividade"
+								label={`Link da atividade ${
+									settings.linkSuffix
+										? "(sufixo ativado)"
+										: ""
+								}`}
 								variant="standard"
 								type="url"
 								value={aLink}
@@ -217,17 +221,25 @@ export default function EditAppointment({
 									setATime(event.target.value);
 								}}
 							/>
-							<Input
-								fullWidth
-								label="Dia da atividade"
-								variant="standard"
-								disabled
-								value={
-									days.find((dayObj) => {
-										return dayObj.value === appointment.day;
-									}).day
-								}
-							/>
+							<div
+								style={{
+									marginBottom: "2rem",
+								}}
+							>
+								<Input
+									fullWidth
+									label="Dia da atividade"
+									variant="standard"
+									disabled
+									value={
+										days.find((dayObj) => {
+											return (
+												dayObj.value === appointment.day
+											);
+										}).day
+									}
+								/>
+							</div>
 							<Button
 								fullWidth
 								type="primary"

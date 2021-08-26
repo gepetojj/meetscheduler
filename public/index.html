@@ -3,19 +3,55 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%PUBLIC_URL%/icon.ico" />
+		<meta http-equiv="Cache-control" content="public" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#000000" />
+		<meta name="theme-color" content="#6958C9" />
 		<meta
 			name="description"
 			content="Seja lembrado de seus compromissos no Google Meet, com o MeetScheduler."
 		/>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
-			rel="stylesheet"
-		/>
 		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+		<link
+			rel="preload"
+			as="font"
+			href="%PUBLIC_URL%/fonts/Poppins-Regular.ttf"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="preload"
+			as="font"
+			href="%PUBLIC_URL%/fonts/Poppins-Medium.ttf"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="preload"
+			as="font"
+			href="%PUBLIC_URL%/fonts/Poppins-SemiBold.ttf"
+			type="font/ttf"
+			crossorigin="anonymous"
+		/>
+		<style>
+			@font-face {
+				font-family: "Poppins";
+				src: url("fonts/Poppins-Regular.ttf");
+				font-weight: 400;
+				font-display: swap;
+			}
+			@font-face {
+				font-family: "Poppins";
+				src: url("fonts/Poppins-Medium.ttf");
+				font-weight: 500;
+				font-display: swap;
+			}
+			@font-face {
+				font-family: "Poppins";
+				src: url("fonts/Poppins-SemiBold.ttf");
+				font-weight: 600;
+				font-display: swap;
+			}
+		</style>
 		<title>MeetScheduler</title>
 	</head>
 	<body>

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Delete } from "@material-ui/icons";
 import styled from "styled-components";
 
@@ -76,7 +77,7 @@ const AppointmentTime = styled.span`
 	user-select: none;
 `;
 
-export default function Appointment({
+function Appointment({
 	appointment,
 	changeModalState,
 	deleteAppointment,
@@ -103,3 +104,5 @@ export default function Appointment({
 		</AppointmentArea>
 	);
 }
+
+export default memo(Appointment);

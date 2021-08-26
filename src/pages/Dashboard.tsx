@@ -72,15 +72,10 @@ function Dashboard() {
 	}, [schedule, storage]);
 
 	const refreshSettings = useCallback(() => {
-		settings.update(
-			"autoOpenAppointments",
-			new Storage("autoOpenAppointments").refresh()
-		);
-		settings.update(
-			"useMondayAsFirstDay",
-			new Storage("useMondayAsFirstDay").refresh()
-		);
-		settings.update("linkSuffix", new Storage("linkSuffix").refresh());
+		const settingsValues = new Storage("settings").refreshMany();
+		settingsValues.forEach((setting) => {
+			settings.update(setting.key, setting.value);
+		});
 	}, [settings]);
 
 	useEffect(() => {
@@ -108,7 +103,9 @@ function Dashboard() {
 				});
 				appointments.forEach((appointment) => {
 					const message = `Seu compromisso '${appointment.name}' começou!`;
-					const link = `${appointment.link}${settings.linkSuffix}`;
+					const link = `${appointment.link}${
+						settings.linkSuffix ? settings.linkSuffix : ""
+					}`;
 					if (settings.autoOpenAppointments) {
 						electron.shell.openExternal(link);
 					}

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styled from "styled-components";
 
 export interface IButton {
@@ -43,13 +44,7 @@ const ButtonText = styled.span<{ hasIcon: boolean }>`
 	margin-left: ${({ hasIcon }) => (hasIcon ? "0.6rem" : "0")};
 `;
 
-export default function Button({
-	type,
-	icon,
-	text,
-	fullWidth,
-	onClick,
-}: IButton) {
+function Button({ type, icon, text, fullWidth, onClick }: IButton) {
 	return (
 		<ButtonArea
 			primary={type === "primary"}
@@ -61,3 +56,5 @@ export default function Button({
 		</ButtonArea>
 	);
 }
+
+export default memo(Button);

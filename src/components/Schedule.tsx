@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
 	DragDropContext,
 	Droppable,
@@ -63,7 +64,7 @@ const DayName = styled.h2<{ marked: boolean }>`
 	text-decoration: ${(props) => (props.marked ? "underline" : "none")};
 `;
 
-export default function Schedule({ day, deleteAppointment }: ISchedule) {
+function Schedule({ day, deleteAppointment }: ISchedule) {
 	const { schedule, settings } = useMSContext();
 
 	const reorder = (day: Day, startIndex: number, endIndex: number) => {
@@ -209,3 +210,5 @@ export default function Schedule({ day, deleteAppointment }: ISchedule) {
 		</ScheduleArea>
 	);
 }
+
+export default memo(Schedule);

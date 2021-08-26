@@ -105,7 +105,7 @@ export default function AddAppointmentModal() {
 	]);
 	const [selectedDay, setSelectedDay] = useState<Day | unknown>("");
 	const { enqueueSnackbar } = useSnackbar();
-	const { schedule } = useMSContext();
+	const { schedule, settings } = useMSContext();
 
 	const handleAppointmentCreation = (
 		name: string,
@@ -198,7 +198,11 @@ export default function AddAppointmentModal() {
 							/>
 							<Input
 								fullWidth
-								label="Link da atividade"
+								label={`Link da atividade ${
+									settings.linkSuffix
+										? "(sufixo ativado)"
+										: ""
+								}`}
 								variant="standard"
 								type="url"
 							/>
