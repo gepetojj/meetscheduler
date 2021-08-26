@@ -1,7 +1,7 @@
 {
 	"name": "meetscheduler",
 	"description": "Seja lembrado de seus compromissos no Google Meet, com o MeetScheduler.",
-	"version": "1.4.6",
+	"version": "1.5.6",
 	"author": "Gepetojj",
 	"homepage": "./",
 	"main": "build/main.js",

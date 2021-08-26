@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { withSnackbar, useSnackbar } from "notistack";
-import { MoreVert, Refresh } from "@material-ui/icons";
+import { Refresh } from "@material-ui/icons";
+import { Button as MUIButton } from "@material-ui/core";
 import styled from "styled-components";
 import dayjs from "dayjs";
 
@@ -9,6 +10,7 @@ import { theme } from "../styles/theme";
 import { useMSContext } from "../components/MSContext";
 import { getDayOfWeek, getMinute, getHour, Storage } from "../helpers";
 import Button from "../components/Button";
+import Options from "../components/Options";
 import Schedule from "../components/Schedule";
 import AddAppointmentModal from "../components/AddAppointment";
 
@@ -58,31 +60,28 @@ const Buttons = styled.div`
 	}
 `;
 
-const Options = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	background-color: ${({ theme }) => theme.colors.secondary.main};
-	border-radius: ${({ theme }) => theme.borderRadius};
-	transition: 0.2s;
-	cursor: pointer;
-
-	&:hover {
-		filter: brightness(115%);
-	}
-`;
-
 function Dashboard() {
 	const [storage] = useState(new Storage("schedule"));
 	const [day, setDay] = useState<Day>("monday");
 	const [appointmentCache, setAppointmentCache] = useState<string[]>([]);
 	const { enqueueSnackbar } = useSnackbar();
-	const { schedule } = useMSContext();
+	const { schedule, settings } = useMSContext();
 
 	const refreshSchedule = useCallback(() => {
 		schedule.update(storage.refresh());
 	}, [schedule, storage]);
+
+	const refreshSettings = useCallback(() => {
+		settings.update(
+			"autoOpenAppointments",
+			new Storage("autoOpenAppointments").refresh()
+		);
+		settings.update(
+			"useMondayAsFirstDay",
+			new Storage("useMondayAsFirstDay").refresh()
+		);
+		settings.update("linkSuffix", new Storage("linkSuffix").refresh());
+	}, [settings]);
 
 	useEffect(() => {
 		const dayInterval = setInterval(() => {
@@ -90,10 +89,11 @@ function Dashboard() {
 			if (day !== newDay) {
 				setDay(newDay);
 				refreshSchedule();
+				refreshSettings();
 			}
 		}, ONE_SECOND);
 		return () => clearInterval(dayInterval);
-	}, [day, refreshSchedule]);
+	}, [day, refreshSchedule, refreshSettings]);
 
 	useEffect(() => {
 		const checkInterval = setInterval(() => {
@@ -108,11 +108,27 @@ function Dashboard() {
 				});
 				appointments.forEach((appointment) => {
 					const message = `Seu compromisso '${appointment.name}' começou!`;
-					electron.shell.openExternal(appointment.link);
+					const link = `${appointment.link}${settings.linkSuffix}`;
+					if (settings.autoOpenAppointments) {
+						electron.shell.openExternal(link);
+					}
 					let newAppointmentCache = appointmentCache;
 					newAppointmentCache.push(appointment.id);
 					setAppointmentCache(newAppointmentCache);
-					enqueueSnackbar(message, { variant: "info" });
+					enqueueSnackbar(message, {
+						variant: "info",
+						autoHideDuration: ONE_SECOND * 10,
+						action: (
+							<MUIButton
+								onClick={() => {
+									electron.shell.openExternal(link);
+								}}
+								style={{ color: theme.colors.font.main }}
+							>
+								Abrir
+							</MUIButton>
+						),
+					});
 					new electron.remote.Notification({
 						title: "Compromisso iniciado!",
 						body: message,
@@ -121,7 +137,7 @@ function Dashboard() {
 			}
 		}, ONE_SECOND);
 		return () => clearInterval(checkInterval);
-	}, [schedule, day, enqueueSnackbar, appointmentCache]);
+	}, [schedule, day, settings, enqueueSnackbar, appointmentCache]);
 
 	const deleteAppointment = (day: Day, id: string) => {
 		const newAppointments = schedule[day].filter((appointment) => {
@@ -145,21 +161,15 @@ function Dashboard() {
 				onClick={() => {
 					setAppointmentCache([]);
 					refreshSchedule();
-					enqueueSnackbar("Horário e cache recarregados.", {
-						variant: "success",
-					});
+					refreshSettings();
+					enqueueSnackbar(
+						"Horário, configurações e cache recarregados.",
+						{
+							variant: "success",
+						}
+					);
 				}}
 			/>
-		);
-	};
-
-	const MoreOptions = () => {
-		return (
-			<Options>
-				<MoreVert
-					style={{ color: theme.colors.font.main, fontSize: 30 }}
-				/>
-			</Options>
 		);
 	};
 
@@ -173,7 +183,7 @@ function Dashboard() {
 			<Buttons>
 				<AddAppointmentModal />
 				<RefreshAppointments />
-				<MoreOptions />
+				<Options />
 			</Buttons>
 			<Schedule day={day} deleteAppointment={deleteAppointment} />
 		</Fullpage>
