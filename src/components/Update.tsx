@@ -1,3 +1,4 @@
+import { FC } from "react";
 import Modal from "reactjs-popup";
 import styled from "styled-components";
 
@@ -72,7 +73,7 @@ const UpdateDesc = styled.p`
 	color: ${({ theme }) => theme.colors.font.mTwo};
 `;
 
-export default function Update({ isVisible, data }: IUpdate) {
+export const Update: FC<IUpdate> = ({ isVisible, data }) => {
 	return (
 		<UpdateModal
 			open={isVisible}
@@ -103,4 +104,4 @@ export default function Update({ isVisible, data }: IUpdate) {
 			</UpdateInfo>
 		</UpdateModal>
 	);
-}
+};

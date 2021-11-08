@@ -1,16 +1,16 @@
-import { useState, MouseEvent, useEffect } from "react";
-import { MoreVert, Close } from "@material-ui/icons";
-import { styled as MUIStyled } from "@material-ui/core/styles";
-import styled from "styled-components";
+import Divider from "@material-ui/core/Divider";
 import Menu from "@material-ui/core/Menu";
 import Switch from "@material-ui/core/Switch";
-import Divider from "@material-ui/core/Divider";
+import { styled as MUIStyled } from "@material-ui/core/styles";
+import { Close, MoreVert } from "@material-ui/icons";
+import { FC, MouseEvent, useEffect, useState } from "react";
 import Modal from "reactjs-popup";
+import styled from "styled-components";
 
-import { theme } from "../styles/theme";
-import { useMSContext } from "./MSContext";
 import { Storage } from "../helpers";
+import { theme } from "../styles/theme";
 import Input from "./Input";
+import { useMSContext } from "./MSContext";
 
 const shell = window.require("electron").shell;
 
@@ -149,7 +149,7 @@ const StyledDivider = MUIStyled(Divider)({
 	backgroundColor: theme.colors.secondary.mOne,
 });
 
-export default function Options() {
+export const Options: FC = () => {
 	const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 	const [isMenuVisible, setMenuVisible] = useState(false);
 	const [isSettingsVisible, setSettingsVisible] = useState(false);
@@ -165,9 +165,7 @@ export default function Options() {
 		setMenuVisible(true);
 	};
 
-	const disableMenu = () => {
-		setMenuVisible(false);
-	};
+	const disableMenu = () => setMenuVisible(false);
 
 	return (
 		<>
@@ -188,9 +186,7 @@ export default function Options() {
 									fontSize: 30,
 									color: theme.colors.font.main,
 								}}
-								onClick={() => {
-									close();
-								}}
+								onClick={close}
 							/>
 						</SettingsModalHeader>
 						<SettingsModalTitle>Configurações</SettingsModalTitle>
@@ -199,13 +195,13 @@ export default function Options() {
 								<p>Segunda como primeiro dia da semana.</p>
 								<StyledSwitch
 									checked={settings.useMondayAsFirstDay}
-									onChange={(event) => {
+									onChange={({ target }) => {
 										new Storage(
 											"useMondayAsFirstDay"
-										).write(event.target.checked);
+										).write(target.checked);
 										settings.update(
 											"useMondayAsFirstDay",
-											event.target.checked
+											target.checked
 										);
 									}}
 								/>
@@ -213,17 +209,18 @@ export default function Options() {
 							<StyledDivider />
 							<Setting>
 								<p>
-									Abrir automaticamente compromissos ativos.
+									Abrir automaticamente compromissos
+									iniciados.
 								</p>
 								<StyledSwitch
 									checked={settings.autoOpenAppointments}
-									onChange={(event) => {
+									onChange={({ target }) => {
 										new Storage(
 											"autoOpenAppointments"
-										).write(event.target.checked);
+										).write(target.checked);
 										settings.update(
 											"autoOpenAppointments",
-											event.target.checked
+											target.checked
 										);
 									}}
 								/>
@@ -235,9 +232,9 @@ export default function Options() {
 									label="Sufixo"
 									variant="standard"
 									value={suffix}
-									onChange={(event) => {
-										setSuffix(event.target.value);
-									}}
+									onChange={({ target }) =>
+										setSuffix(target.value)
+									}
 									onBlur={() => {
 										new Storage("linkSuffix").write(suffix);
 										settings.update("linkSuffix", suffix);
@@ -280,15 +277,15 @@ export default function Options() {
 				</Option>
 				<Option
 					secondary={true}
-					onClick={() => {
+					onClick={() =>
 						shell.openExternal(
-							"https://github.com/gepetojj/meetscheduler#meetscheduler"
-						);
-					}}
+							"https://github.com/gepetojj/meetscheduler#readme"
+						)
+					}
 				>
 					MeetScheduler
 				</Option>
 			</StyledMenu>
 		</>
 	);
-}
+};

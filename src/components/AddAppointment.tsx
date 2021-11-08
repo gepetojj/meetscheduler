@@ -1,24 +1,24 @@
-import { useState } from "react";
+import {
+	FormControl,
+	InputLabel,
+	Input as MUIInput,
+	MenuItem,
+	Select,
+} from "@material-ui/core";
 import { styled as MUIStyled } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
+import { FC, useState } from "react";
 import { RiAddFill, RiCloseFill } from "react-icons/ri";
+import Modal from "reactjs-popup";
 import styled from "styled-components";
 import uniqid from "uniqid";
-import Modal from "reactjs-popup";
-import {
-	InputLabel,
-	MenuItem,
-	FormControl,
-	Select,
-	Input as MUIInput,
-} from "@material-ui/core";
 
-import { useMSContext } from "./MSContext";
 import { Appointment, Day } from "../entities";
 import { Storage } from "../helpers";
 import { theme } from "../styles/theme";
-import Input from "./Input";
 import Button from "./Button";
+import Input from "./Input";
+import { useMSContext } from "./MSContext";
 
 const AddAppointmentModalArea = styled(Modal)`
 	&-overlay {
@@ -92,7 +92,7 @@ const AddAppointmentModalFormControl = MUIStyled(FormControl)({
 	},
 });
 
-export default function AddAppointmentModal() {
+export const AddAppointmentModal: FC = () => {
 	const [days] = useState([
 		{ day: "Selecione", value: "" },
 		{ day: "Segunda", value: "monday" },
@@ -103,7 +103,7 @@ export default function AddAppointmentModal() {
 		{ day: "Sábado", value: "saturday" },
 		{ day: "Domingo", value: "sunday" },
 	]);
-	const [selectedDay, setSelectedDay] = useState<Day | unknown>("");
+	const [selectedDay, setSelectedDay] = useState<Day | "">("");
 	const { enqueueSnackbar } = useSnackbar();
 	const { schedule, settings } = useMSContext();
 
@@ -166,9 +166,7 @@ export default function AddAppointmentModal() {
 						<RiCloseFill
 							color={theme.colors.font.mOne}
 							size={30}
-							onClick={() => {
-								close();
-							}}
+							onClick={close}
 						/>
 					</AddAppointmentModalHeader>
 					<div>
@@ -176,17 +174,13 @@ export default function AddAppointmentModal() {
 							Adicione um novo compromisso.
 						</AddAppointmentModalTitle>
 						<AddAppointmentModalForm
-							onSubmit={(event) => {
-								event.preventDefault();
-								const appointmentName = event.target[0].value;
-								const appointmentLink = event.target[1].value;
-								const appointmentTime = event.target[2].value;
-								const appointmentDay = event.target[3].value;
+							onSubmit={({ preventDefault, target }) => {
+								preventDefault();
 								handleAppointmentCreation(
-									appointmentName,
-									appointmentLink,
-									appointmentTime,
-									appointmentDay,
+									target[0].value,
+									target[1].value,
+									target[2].value,
+									target[3].value,
 									close
 								);
 							}}
@@ -199,9 +193,7 @@ export default function AddAppointmentModal() {
 							<Input
 								fullWidth
 								label={`Link da atividade ${
-									settings.linkSuffix
-										? "(sufixo ativado)"
-										: ""
+									settings.linkSuffix ? "(sufixo ativo)" : ""
 								}`}
 								variant="standard"
 								type="url"
@@ -223,17 +215,14 @@ export default function AddAppointmentModal() {
 								<Select
 									labelId="selectLabel"
 									value={selectedDay}
-									onChange={(day) => {
-										setSelectedDay(day.target.value);
-									}}
+									onChange={({ target }) =>
+										setSelectedDay(target.value as Day)
+									}
 									input={<MUIInput />}
 								>
-									{days.map((day) => (
-										<MenuItem
-											key={day.value}
-											value={day.value}
-										>
-											{day.day}
+									{days.map(({ value, day }) => (
+										<MenuItem key={value} value={value}>
+											{day}
 										</MenuItem>
 									))}
 								</Select>
@@ -255,4 +244,4 @@ export default function AddAppointmentModal() {
 			)}
 		</AddAppointmentModalArea>
 	);
-}
+};

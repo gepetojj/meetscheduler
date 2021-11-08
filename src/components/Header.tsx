@@ -1,4 +1,5 @@
-import { Remove, Close } from "@material-ui/icons";
+import { Close, Remove } from "@material-ui/icons";
+import { FC } from "react";
 import styled from "styled-components";
 
 import { theme } from "../styles/theme";
@@ -61,44 +62,37 @@ const HeaderOption = styled.button<{ isCloseOption?: boolean }>`
 	}
 `;
 
-export default function Header({ children }) {
+export const Header: FC = () => {
 	return (
-		<>
-			<HeaderArea>
-				<HeaderLeftSide>
-					<HeaderTitle>MeetScheduler</HeaderTitle>
-				</HeaderLeftSide>
-				<HeaderRightSide>
-					<HeaderOption
-						aria-label="Minimiza o programa"
-						onClick={() => {
-							ipcRenderer.send("minimize-program");
+		<HeaderArea>
+			<HeaderLeftSide>
+				<HeaderTitle>MeetScheduler</HeaderTitle>
+			</HeaderLeftSide>
+			<HeaderRightSide>
+				<HeaderOption
+					aria-label="Minimiza o programa"
+					onClick={() => ipcRenderer.send("minimize-program")}
+				>
+					<Remove
+						style={{
+							fontSize: 24,
+							color: theme.colors.font.main,
 						}}
-					>
-						<Remove
-							style={{
-								fontSize: 24,
-								color: theme.colors.font.main,
-							}}
-						/>
-					</HeaderOption>
-					<HeaderOption
-						aria-label="Fecha o programa"
-						isCloseOption
-						onClick={() => {
-							ipcRenderer.send("close-program");
+					/>
+				</HeaderOption>
+				<HeaderOption
+					aria-label="Fecha o programa"
+					isCloseOption
+					onClick={() => ipcRenderer.send("close-program")}
+				>
+					<Close
+						style={{
+							fontSize: 24,
+							color: theme.colors.font.main,
 						}}
-					>
-						<Close
-							style={{
-								fontSize: 24,
-								color: theme.colors.font.main,
-							}}
-						/>
-					</HeaderOption>
-				</HeaderRightSide>
-			</HeaderArea>
-			{children}
-		</>
+					/>
+				</HeaderOption>
+			</HeaderRightSide>
+		</HeaderArea>
 	);
-}
+};

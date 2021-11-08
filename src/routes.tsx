@@ -1,7 +1,8 @@
 import { Suspense, lazy } from "react";
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 
 import LoadingContent from "./components/LoadingContent";
+
 const Landing = lazy(() => import("./pages/Landing"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 

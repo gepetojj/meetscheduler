@@ -1,29 +1,29 @@
-import { useState, useEffect } from "react";
-import { SnackbarProvider } from "notistack";
-import { ThemeProvider } from "styled-components";
 import Collapse from "@material-ui/core/Collapse";
+import { SnackbarProvider } from "notistack";
+import { useEffect, useState } from "react";
+import { ThemeProvider } from "styled-components";
 
+import { Header } from "./components/Header";
 import { MSCProvider } from "./components/MSContext";
+import { Update } from "./components/Update";
+import Routes from "./routes";
 import { Globals } from "./styles/globals";
 import { theme } from "./styles/theme";
-import Header from "./components/Header";
-import Update from "./components/Update";
-import Routes from "./routes";
 
-const electron = window.require("electron");
+const ipcRenderer = window.require("electron").ipcRenderer;
 
 export default function App() {
 	const [isUpdating, setIsUpdating] = useState<boolean>(false);
 	const [updateData, setUpdateData] = useState(null);
 
 	useEffect(() => {
-		electron.ipcRenderer.on("update-started", () => {
+		ipcRenderer.on("update-started", () => {
 			setIsUpdating(true);
 		});
-		electron.ipcRenderer.on("update-progress", (_, info) => {
+		ipcRenderer.on("update-progress", (_, info) => {
 			setUpdateData(info);
 		});
-		electron.ipcRenderer.on("update-finished", () => {
+		ipcRenderer.on("update-finished", () => {
 			setIsUpdating(false);
 		});
 	}, []);
@@ -37,10 +37,9 @@ export default function App() {
 				TransitionComponent={Collapse}
 			>
 				<MSCProvider>
-					<Header>
-						<Update isVisible={isUpdating} data={updateData} />
-						<Routes />
-					</Header>
+					<Header />
+					<Update isVisible={isUpdating} data={updateData} />
+					<Routes />
 				</MSCProvider>
 			</SnackbarProvider>
 		</ThemeProvider>

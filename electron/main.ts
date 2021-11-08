@@ -1,7 +1,7 @@
-import "v8-compile-cache";
-import { app, BrowserWindow, Tray, Menu } from "electron";
+import { BrowserWindow, Menu, Tray, app } from "electron";
 import * as path from "path";
 import * as url from "url";
+import "v8-compile-cache";
 
 import { config } from "./config";
 import { Updater } from "./updater";
@@ -26,9 +26,7 @@ function createTray() {
 		},
 		{
 			label: "Fechar",
-			click: () => {
-				app.quit();
-			},
+			click: app.quit,
 		},
 	]);
 
@@ -73,8 +71,8 @@ function createWindow() {
 		);
 	}
 
-	window.on("minimize", (event: Electron.Event) => {
-		event.preventDefault();
+	window.on("minimize", ({ preventDefault }: Electron.Event) => {
+		preventDefault();
 		if (window) {
 			window.hide();
 			tray = createTray();

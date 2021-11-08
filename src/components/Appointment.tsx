@@ -1,9 +1,9 @@
-import { memo } from "react";
 import { Delete } from "@material-ui/icons";
+import { FC, memo } from "react";
 import styled from "styled-components";
 
+import { Day, Appointment as EAppointment } from "../entities";
 import { theme } from "../styles/theme";
-import { Appointment as EAppointment, Day } from "../entities";
 
 export interface IAppointment {
 	appointment: EAppointment;
@@ -77,32 +77,28 @@ const AppointmentTime = styled.span`
 	user-select: none;
 `;
 
-function Appointment({
+const Appointment: FC<IAppointment> = ({
 	appointment,
 	changeModalState,
 	deleteAppointment,
-}: IAppointment) {
+}) => {
 	return (
 		<AppointmentArea>
 			<AppointmentAction
-				onClick={() => {
-					deleteAppointment(appointment.day, appointment.id);
-				}}
+				onClick={() =>
+					deleteAppointment(appointment.day, appointment.id)
+				}
 			>
 				<Delete
 					style={{ color: theme.colors.font.main, fontSize: 30 }}
 				/>
 			</AppointmentAction>
-			<AppointmentData
-				onClick={() => {
-					changeModalState(true);
-				}}
-			>
+			<AppointmentData onClick={() => changeModalState(true)}>
 				<AppointmentLabel>{appointment.name}</AppointmentLabel>
 				<AppointmentTime>{appointment.time}</AppointmentTime>
 			</AppointmentData>
 		</AppointmentArea>
 	);
-}
+};
 
 export default memo(Appointment);

@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
+import { FC, useEffect, useState } from "react";
 import { RiCloseFill, RiEditLine } from "react-icons/ri";
+import Modal from "reactjs-popup";
 import styled from "styled-components";
 import uniqid from "uniqid";
-import Modal from "reactjs-popup";
 
-import { useMSContext } from "./MSContext";
+import { Day, Appointment as EAppointment } from "../entities";
 import { Storage } from "../helpers";
-import { Appointment as EAppointment, Day, Schedule } from "../entities";
 import { theme } from "../styles/theme";
 import Appointment from "./Appointment";
-import Input from "./Input";
 import Button from "./Button";
+import Input from "./Input";
+import { useMSContext } from "./MSContext";
 
 const AppointmentModalArea = styled(Modal)`
 	&-overlay {
@@ -54,13 +54,15 @@ const AppointmentModalForm = styled.form`
 	margin: 0.7rem 0.5rem;
 `;
 
-export default function EditAppointment({
-	appointment,
-	deleteAppointment,
-}: {
+export interface IEditAppointmentProps {
 	appointment: EAppointment;
 	deleteAppointment: (day: Day, id: string) => void;
-}) {
+}
+
+export const EditAppointment: FC<IEditAppointmentProps> = ({
+	appointment,
+	deleteAppointment,
+}) => {
 	const [days] = useState([
 		{ day: "Segunda", value: "monday" },
 		{ day: "Terça", value: "tuesday" },
@@ -101,9 +103,7 @@ export default function EditAppointment({
 			});
 			return;
 		}
-		let newAppointment: EAppointment = {
-			...appointment,
-		};
+		let newAppointment = appointment;
 		if (name.length > 0 && name !== newAppointment.name) {
 			newAppointment.name = name;
 		}
@@ -120,15 +120,14 @@ export default function EditAppointment({
 					return app.id === appointment.id;
 				}
 			);
-			let newSchedule: Schedule = { ...schedule };
+			let newSchedule = schedule;
 			newSchedule[appointment.day][appointmentIndex] = newAppointment;
 			new Storage("schedule").write(newSchedule);
 			schedule.update(newSchedule);
 			enqueueSnackbar("Compromisso editado.", {
 				variant: "success",
 			});
-			close();
-			return;
+			return close();
 		}
 		enqueueSnackbar("Compromisso não alterado.", {
 			variant: "warning",
@@ -147,9 +146,7 @@ export default function EditAppointment({
 				/>
 			}
 			open={isModalOpen}
-			onClose={() => {
-				setModalOpen(false);
-			}}
+			onClose={() => setModalOpen(false)}
 			modal
 			nested
 			closeOnDocumentClick
@@ -161,9 +158,7 @@ export default function EditAppointment({
 						<RiCloseFill
 							color={theme.colors.font.mOne}
 							size={30}
-							onClick={() => {
-								close();
-							}}
+							onClick={close}
 						/>
 					</AppointmentModalHeader>
 					<div>
@@ -171,15 +166,12 @@ export default function EditAppointment({
 							Edite seu compromisso.
 						</AppointmentModalTitle>
 						<AppointmentModalForm
-							onSubmit={(event) => {
-								event.preventDefault();
-								const appointmentName = event.target[0].value;
-								const appointmentLink = event.target[1].value;
-								const appointmentTime = event.target[2].value;
+							onSubmit={({ preventDefault, target }) => {
+								preventDefault();
 								handleAppointmentEdit(
-									appointmentName,
-									appointmentLink,
-									appointmentTime,
+									target[0].value,
+									target[1].value,
+									target[2].value,
 									close
 								);
 							}}
@@ -189,23 +181,21 @@ export default function EditAppointment({
 								label="Nome da atividade"
 								variant="standard"
 								value={aName}
-								onChange={(event) => {
-									setAName(event.target.value);
-								}}
+								onChange={({ target }) =>
+									setAName(target.value)
+								}
 							/>
 							<Input
 								fullWidth
 								label={`Link da atividade ${
-									settings.linkSuffix
-										? "(sufixo ativado)"
-										: ""
+									settings.linkSuffix ? "(sufixo ativo)" : ""
 								}`}
 								variant="standard"
 								type="url"
 								value={aLink}
-								onChange={(event) => {
-									setALink(event.target.value);
-								}}
+								onChange={({ target }) =>
+									setALink(target.value)
+								}
 							/>
 							<Input
 								fullWidth
@@ -217,9 +207,9 @@ export default function EditAppointment({
 								}}
 								helperText="Formato 24h, exemplo: 14:30"
 								value={aTime}
-								onChange={(event) => {
-									setATime(event.target.value);
-								}}
+								onChange={({ target }) =>
+									setATime(target.value)
+								}
 							/>
 							<div
 								style={{
@@ -232,10 +222,8 @@ export default function EditAppointment({
 									variant="standard"
 									disabled
 									value={
-										days.find((dayObj) => {
-											return (
-												dayObj.value === appointment.day
-											);
+										days.find(({ value }) => {
+											return value === appointment.day;
 										}).day
 									}
 								/>
@@ -257,4 +245,4 @@ export default function EditAppointment({
 			)}
 		</AppointmentModalArea>
 	);
-}
+};

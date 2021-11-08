@@ -13,9 +13,12 @@ client.on("connect", () => {
 		electronStarted = true;
 		console.log("Starting electron connection...");
 
-		childProcess.exec('nodemon --watch "public" --exec "electron public/main.js"', {
-			windowsHide: true,
-		});
+		childProcess.exec(
+			'nodemon --watch "public" --exec "electron public/main.js"',
+			{
+				windowsHide: true,
+			}
+		);
 	}
 });
 

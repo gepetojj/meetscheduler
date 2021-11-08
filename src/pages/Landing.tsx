@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { FC, useEffect, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import dayjs from "dayjs";
 
-import { Storage } from "../helpers/storage";
-import { useMSContext } from "../components/MSContext";
 import Button from "../components/Button";
+import { useMSContext } from "../components/MSContext";
+import { Storage } from "../helpers/storage";
 
 const electron = window.require("electron");
 
@@ -58,7 +58,7 @@ const CopyrightText = styled.p`
 	cursor: pointer;
 `;
 
-export default function Landing() {
+const Landing: FC = () => {
 	const [redirect, setRedirect] = useState<JSX.Element | null>(null);
 	const [storage] = useState(new Storage("firstTimeAccess"));
 	const { settings } = useMSContext();
@@ -103,4 +103,6 @@ export default function Landing() {
 			</Copyright>
 		</Fullpage>
 	);
-}
+};
+
+export default Landing;

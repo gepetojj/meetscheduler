@@ -1,31 +1,32 @@
-import { memo } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { FC, memo } from "react";
+import styled from "styled-components";
 
 import { theme } from "../styles/theme";
 
-function LoadingContent() {
+const LoadingArea = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	color: ${({ theme }) => theme.colors.font.main};
+	user-select: none;
+`;
+
+const LoadingContent: FC = () => {
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "center",
-				alignItems: "center",
-				width: "100%",
-				height: "100%",
-				color: theme.colors.font.main,
-			}}
-		>
-			<h1>O MeetScheduler está carregando.</h1>
-			<h2 style={{ marginTop: "0.5rem" }}>Aguarde...</h2>
+		<LoadingArea>
+			<h1>MeetScheduler está carregando.</h1>
 			<CircularProgress
 				style={{
 					color: theme.colors.font.mOne,
 					marginTop: "2rem",
 				}}
 			/>
-		</div>
+		</LoadingArea>
 	);
-}
+};
 
 export default memo(LoadingContent);

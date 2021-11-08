@@ -1,6 +1,6 @@
-import { memo } from "react";
-import { styled as MUIStyled } from "@material-ui/core/styles";
 import { StandardTextFieldProps, TextField } from "@material-ui/core";
+import { styled as MUIStyled } from "@material-ui/core/styles";
+import { FC, memo } from "react";
 
 import { theme } from "../styles/theme";
 
@@ -41,8 +41,8 @@ const StyledInput = MUIStyled(TextField)({
 	},
 });
 
-function Input(options: StandardTextFieldProps) {
+const Input: FC<StandardTextFieldProps> = (options) => {
 	return <StyledInput {...options} />;
-}
+};
 
 export default memo(Input);

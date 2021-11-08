@@ -1,22 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
-import { withSnackbar, useSnackbar } from "notistack";
-import { Refresh } from "@material-ui/icons";
 import { Button as MUIButton } from "@material-ui/core";
+import { Refresh } from "@material-ui/icons";
+import { useSnackbar, withSnackbar } from "notistack";
+import { FC, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import dayjs from "dayjs";
 
-import { Day } from "../entities";
-import { theme } from "../styles/theme";
-import { useMSContext } from "../components/MSContext";
-import { getDayOfWeek, getMinute, getHour, Storage } from "../helpers";
+import { AddAppointmentModal } from "../components/AddAppointment";
 import Button from "../components/Button";
-import Options from "../components/Options";
+import { useMSContext } from "../components/MSContext";
+import { Options } from "../components/Options";
 import Schedule from "../components/Schedule";
-import AddAppointmentModal from "../components/AddAppointment";
+import { Day } from "../entities";
+import { Storage, getDayOfWeek, getHour, getMinute } from "../helpers";
+import { theme } from "../styles/theme";
 
 const ONE_SECOND = 1000;
 const electron = window.require("electron");
-dayjs.locale("pt-br");
 
 const Fullpage = styled.div`
 	display: flex;
@@ -60,7 +58,7 @@ const Buttons = styled.div`
 	}
 `;
 
-function Dashboard() {
+const Dashboard: FC = () => {
 	const [storage] = useState(new Storage("schedule"));
 	const [day, setDay] = useState<Day>("monday");
 	const [appointmentCache, setAppointmentCache] = useState<string[]>([]);
@@ -185,6 +183,6 @@ function Dashboard() {
 			<Schedule day={day} deleteAppointment={deleteAppointment} />
 		</Fullpage>
 	);
-}
+};
 
 export default withSnackbar(Dashboard);

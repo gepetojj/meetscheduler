@@ -1,5 +1,6 @@
-import { Day } from "../entities/Day";
 import dayjs from "dayjs";
+
+import { Day } from "../entities/Day";
 
 dayjs.locale("pt-br");
 

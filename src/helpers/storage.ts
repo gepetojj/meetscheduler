@@ -1,4 +1,4 @@
-import { Setting, SETTINGS } from "../components/MSContext";
+import { SETTINGS, Setting } from "../components/MSContext";
 
 export type IStorageBucket = "schedule" | "settings" | Setting;
 
@@ -40,7 +40,7 @@ export class Storage {
 		}
 	}
 
-	write(data: any) {
+	write(data: unknown) {
 		try {
 			localStorage.setItem(this.bucket, JSON.stringify(data));
 			return;

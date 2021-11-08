@@ -1,6 +1,6 @@
-import { BrowserWindow, dialog, app } from "electron";
-import { autoUpdater } from "electron-updater";
+import { BrowserWindow, dialog } from "electron";
 import logger from "electron-log";
+import { autoUpdater } from "electron-updater";
 
 export class Updater {
 	constructor(window: BrowserWindow) {
@@ -9,21 +9,20 @@ export class Updater {
 		autoUpdater.autoDownload = false;
 
 		autoUpdater.on("checking-for-update", () => {
-			window.setTitle(
-				`${app.getName()} - Procurando por atualizações...`
-			);
+			window.setTitle("MeetScheduler - Procurando por atualizações...");
 		});
 
 		autoUpdater.on("update-available", () => {
 			dialog
 				.showMessageBox(window, {
-					message: `Uma atualização para o ${app.getName()} está disponível.`,
+					message:
+						"Uma atualização para o MeetScheduler está disponível.",
 					type: "info",
 					buttons: ["Atualizar", "Ignorar"],
 					title: "Atualização disponível!",
 				})
-				.then((response) => {
-					if (response.response === 0) {
+				.then(({ response }) => {
+					if (response === 0) {
 						window.webContents.emit("update-started");
 						autoUpdater.downloadUpdate();
 					}

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+
 import { Schedule } from "../entities";
 
 export interface MSCSchedule extends Schedule {
@@ -34,7 +35,7 @@ export interface IMSContext {
 	schedule: MSCSchedule;
 }
 
-const MSContext = createContext<IMSContext>({
+export const MSContext = createContext<IMSContext>({
 	settings: {
 		firstTimeAccess: true,
 		useMondayAsFirstDay: true,
@@ -54,7 +55,7 @@ const MSContext = createContext<IMSContext>({
 	},
 });
 
-const MSCProvider = ({ children }) => {
+export const MSCProvider = ({ children }) => {
 	const [settings, setSettings] = useState<Settings>({
 		firstTimeAccess: true,
 		useMondayAsFirstDay: true,
@@ -91,9 +92,7 @@ const MSCProvider = ({ children }) => {
 	);
 };
 
-const useMSContext = () => {
+export const useMSContext = () => {
 	const context = useContext(MSContext);
 	return context;
 };
-
-export { MSContext, MSCProvider, useMSContext };

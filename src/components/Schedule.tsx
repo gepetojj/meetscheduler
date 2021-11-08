@@ -1,18 +1,18 @@
-import { memo } from "react";
+import { FC, memo } from "react";
 import {
 	DragDropContext,
-	Droppable,
 	Draggable,
-	DropResult,
-	DroppableProvided,
 	DraggableProvided,
+	DropResult,
+	Droppable,
+	DroppableProvided,
 } from "react-beautiful-dnd";
 import styled from "styled-components";
 
 import { Day, Schedule as ESchedule } from "../entities";
-import { useMSContext } from "./MSContext";
 import { Storage } from "../helpers/storage";
-import Appointment from "./EditAppointment";
+import { EditAppointment as Appointment } from "./EditAppointment";
+import { useMSContext } from "./MSContext";
 import NoAppointment from "./NoAppointment";
 
 export interface ISchedule {
@@ -61,10 +61,10 @@ const DayName = styled.h2<{ marked: boolean }>`
 	color: ${({ theme }) => theme.colors.font.main};
 	user-select: none;
 	margin-bottom: 1rem;
-	text-decoration: ${(props) => (props.marked ? "underline" : "none")};
+	text-decoration: ${({ marked }) => (marked ? "underline" : "none")};
 `;
 
-function Schedule({ day, deleteAppointment }: ISchedule) {
+const Schedule: FC<ISchedule> = ({ day, deleteAppointment }) => {
 	const { schedule, settings } = useMSContext();
 
 	const reorder = (day: Day, startIndex: number, endIndex: number) => {
@@ -209,6 +209,6 @@ function Schedule({ day, deleteAppointment }: ISchedule) {
 			)}
 		</ScheduleArea>
 	);
-}
+};
 
 export default memo(Schedule);
